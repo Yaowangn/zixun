@@ -1,0 +1,156 @@
+<div class="zixunContent">
+	<div class="btns">
+		<button class="btn btn-success add">添加</button>
+		<button class="btn btn-danger batchDelete">批量删除</button>
+	</div>
+	<table class="table table-bordered table-condensed">
+		<thead>
+			<tr>
+				<th>编号</th>
+				<th>文章标题</th>
+				<th>所属栏目</th>
+				<th>背景音乐</th>
+				<th>作者</th>
+				<th>发布时间</th>
+				<th>阅读次数</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="hidden">
+				<td><input type="checkbox" class="myCheck"></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td>
+					<i class="glyphicon glyphicon-pencil update"></i>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<i class="glyphicon glyphicon-trash deleteById"></i>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<!-- 模态框 -->
+	<div class="modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<span><</span><button type="button" class="btn btn-link boxlink">返回</button>
+				</div>
+				<div class="modal-body">
+					<ul>
+				<li><text>标题</text></li>
+				<li><input type="text" class="user"/></li>
+				<li><text>所属栏目</text></li>
+				<li>
+					<select name="" id="">	
+						<option value="">请选择所属栏目</option>
+						
+					</select>
+				</li>
+				<li><text>列表样式</text></li>
+				<li>
+					<div class="liediv">
+						<img src="./images/u86.jpg" alt="列表样式1" flag="0"/>
+					</div>
+					<div class="liediv">
+						<img src="./images/u85.jpg" alt="列表样式2" flag="1"/>
+					</div>
+				</li>
+				<li><text>列表缩略图</text></li>
+				<li>
+					<div class="row">
+					  <div class="col-xs-6 col-md-3">
+					    <a href="#" class="thumbnail">
+					      <img src="./images/u46.png" alt="点击获取缩略图">
+					    </a>
+					  </div>
+					</div>
+				</li>
+				<li><text>正文</text></li>
+				<li>
+					<textarea name="" rows="5" cols="20"></textarea>
+				</li>
+				<li><text>源码</text></li>
+				<li>
+					<input type="text" class="yuanma"/>
+				</li>
+				<li><button class="btn btn-success boxsubmit">确认</button></li>
+			</ul>
+				</div>
+				<div class="modal-footer"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+	<script type="text/javascript">
+		$(function(){
+			$(".zixunContent").height($(".rightDiv").height()-100);
+			
+			$.get("http://120.78.164.247:8099/manager/article/findArticle",{page:4,pageSize:9},function(results){
+				// console.log(results);
+					var zixuns=results.data;
+					var lists=zixuns.list;
+					// console.log(lists)
+					lists.forEach(function(item){
+					console.log(item);
+					var cloneTr=$(".hidden").clone();
+					cloneTr.removeAttr('class');
+
+
+					cloneTr.children(":first").children(":first").val(item.id);
+					$(cloneTr.children()[1]).text(item.title);
+					$(cloneTr.children()[2]).text(item.liststyle);
+					$(cloneTr.children()[3]).text(item.music);
+					$(cloneTr.children()[4]).text(item.author);
+					$(cloneTr.children()[5]).text(item.publishtime);
+					$(cloneTr.children()[6]).text(item.readtimes);
+
+						
+					$("tbody").append(cloneTr);
+					});
+					
+					
+
+
+
+					//单个删除
+					$(".deleteById").click(function(){
+						var id=$(this).parent().parent().children(':first').children().val();
+						var o={
+							id:Number(id)
+						}
+						$.get("http://120.78.164.247:8099/manager/article/deleteArticleById",o,function(results){
+							if(results.status==200){
+								$(".rightDiv_content").load('pages/zixun.html');
+							}else{
+								alert("删除失败！");
+							}
+						})
+					});
+
+
+
+
+
+
+
+
+
+
+		});
+
+			$(".add").click(function(){
+						
+						$(".modal").modal("show");
+					});
+		});
+	</script>
